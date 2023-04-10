@@ -1,9 +1,9 @@
-# Class Property
+# Static Class Property
 
-[![](https://img.shields.io/pypi/v/classproperty.svg)](https://pypi.python.org/pypi/classproperty)
-[![CI](https://github.com/maximz/classproperty/actions/workflows/ci.yaml/badge.svg?branch=master)](https://github.com/maximz/classproperty/actions/workflows/ci.yaml)
-[![](https://img.shields.io/badge/docs-here-blue.svg)](https://classproperty.maximz.com)
-[![](https://img.shields.io/github/stars/maximz/classproperty?style=social)](https://github.com/maximz/classproperty)
+[![](https://img.shields.io/pypi/v/static_class_property.svg)](https://pypi.python.org/pypi/static_class_property)
+[![CI](https://github.com/maximz/static-class-property/actions/workflows/ci.yaml/badge.svg?branch=master)](https://github.com/maximz/static-class-property/actions/workflows/ci.yaml)
+[![](https://img.shields.io/badge/docs-here-blue.svg)](https://static-class-property.maximz.com)
+[![](https://img.shields.io/github/stars/maximz/static-class-property?style=social)](https://github.com/maximz/static-class-property)
 
 ## TODOs: Configuring this template
 
@@ -18,7 +18,7 @@ Set up Codecov at TODO
 ## Installation
 
 ```bash
-pip install classproperty
+pip install static_class_property
 ```
 
 ## Usage
@@ -29,8 +29,8 @@ Submit PRs against `develop` branch, then make a release pull request to `master
 
 ```bash
 # Optional: set up a pyenv virtualenv
-pyenv virtualenv 3.9 classproperty-3.9
-echo "classproperty-3.9" > .python-version
+pyenv virtualenv 3.9 static_class_property-3.9
+echo "static_class_property-3.9" > .python-version
 pyenv version
 
 # Install requirements

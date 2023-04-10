@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-import classproperty
+import static_class_property
 import requests
 import os
 
@@ -20,8 +20,8 @@ def test_version_number_not_yet_on_pypi():
         # if the release does not exist yet, this version-specific lookup should 404
         assert (
             requests.get(
-                "https://pypi.org/pypi/classproperty/{}/json".format(
-                    classproperty.__version__
+                "https://pypi.org/pypi/static_class_property/{}/json".format(
+                    static_class_property.__version__
                 )
             ).status_code
             == 404

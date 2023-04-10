@@ -1,4 +1,4 @@
-from classproperty import classproperty
+from static_class_property import classproperty
 
 
 class ClassWithStaticProperty:

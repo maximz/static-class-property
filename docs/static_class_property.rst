@@ -1,4 +1,4 @@
-classproperty package
+static_class_property package
 =================
 
 Submodules
@@ -7,7 +7,7 @@ Submodules
 Module contents
 ---------------
 
-.. automodule:: classproperty
+.. automodule:: static_class_property
     :members:
     :undoc-members:
     :show-inheritance:

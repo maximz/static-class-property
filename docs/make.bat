@@ -9,7 +9,7 @@ if "%SPHINXBUILD%" == "" (
 )
 set SOURCEDIR=.
 set BUILDDIR=_build
-set SPHINXPROJ=classproperty
+set SPHINXPROJ=static_class_property
 
 if "%1" == "" goto help
 

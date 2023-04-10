@@ -1,4 +1,4 @@
-classproperty documentation table of contents
+static-class-property documentation table of contents
 ======================================
 
 .. toctree::
@@ -6,5 +6,5 @@ classproperty documentation table of contents
    :caption: Contents:
 
    Overview <index>
-   API <classproperty>
+   API <static_class_property>
    changelog

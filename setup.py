@@ -23,9 +23,11 @@ test_requirements = [
 setup(
     author="Maxim Zaslavsky",
     author_email="maxim@maximz.com",
-    name="classproperty",
-    description="Class Property",
-    packages=find_packages(include=["classproperty", "classproperty.*"]),
+    name="static_class_property",
+    description="Static Class Property",
+    packages=find_packages(
+        include=["static_class_property", "static_class_property.*"]
+    ),
     python_requires=">=3.8",
     version="0.0.1",
     classifiers=[
@@ -45,6 +47,6 @@ setup(
     setup_requires=setup_requirements,
     test_suite="tests",
     tests_require=test_requirements,
-    url="https://github.com/maximz/classproperty",
+    url="https://github.com/maximz/static-class-property",
     zip_safe=False,
 )

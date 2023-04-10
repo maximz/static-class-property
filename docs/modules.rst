@@ -1,7 +1,7 @@
-classproperty
+static_class_property
 =========
 
 .. toctree::
    :maxdepth: 4
 
-   classproperty
+   static_class_property

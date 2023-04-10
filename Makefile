@@ -54,15 +54,15 @@ test: ## run tests quickly with the default Python
 	pytest
 
 coverage: ## check code coverage quickly with the default Python
-	coverage run --source classproperty -m pytest
+	coverage run --source static_class_property -m pytest
 	coverage report -m
 	coverage html
 	$(BROWSER) htmlcov/index.html
 
 docs: ## generate Sphinx HTML documentation, including API docs
-	rm -f docs/classproperty.rst
+	rm -f docs/static_class_property.rst
 	rm -f docs/modules.rst
-	sphinx-apidoc -o docs/ classproperty
+	sphinx-apidoc -o docs/ static_class_property
 	$(MAKE) -C docs clean
 	$(MAKE) -C docs html
 	$(BROWSER) docs/_build/html/index.html
