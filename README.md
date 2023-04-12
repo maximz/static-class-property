@@ -1,4 +1,4 @@
-# Static Class Property
+# Static Class Property (WIP)
 
 [![](https://img.shields.io/pypi/v/static_class_property.svg)](https://pypi.python.org/pypi/static_class_property)
 [![CI](https://github.com/maximz/static-class-property/actions/workflows/ci.yaml/badge.svg?branch=master)](https://github.com/maximz/static-class-property/actions/workflows/ci.yaml)
