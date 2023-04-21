@@ -34,6 +34,9 @@ def test_classproperty():
     assert ClassWithStaticProperty.class_variable == "new2"
     assert instance.static_property == "static_property_new2"
     assert ClassWithStaticProperty.static_property == "static_property_new2"
+    assert (
+        ClassWithStaticProperty().static_property == "static_property_new2"
+    )  # new instance
 
     # Can't set on instance
     with pytest.raises(AttributeError, match="can't set attribute"):
@@ -59,22 +62,67 @@ class ClassWithStaticPropertyAndMetaclass(metaclass=MetaClassContainingClassProp
 
 
 def test_classproperty_readonly():
-    pass
-    Foo.backend  # "mybackend"
-    # Can't change before initialization
-    Foo.backend = "test"  # ValueError: cannot set backend
+    assert (
+        ClassWithStaticPropertyAndMetaclass.static_property == "static_property_extra"
+    )
+    instance = ClassWithStaticPropertyAndMetaclass()
 
-    # Can't change after initialization
-    f = Foo()
-    f.backend  # "mybackend"
-    f.backend = "test"  # AttributeError: can't set attribute 'backend'
+    # Can't set on class
+    with pytest.raises(ValueError, match="Cannot set static_property"):
+        ClassWithStaticPropertyAndMetaclass.static_property = "different"
+    assert instance.static_property == "static_property_extra"
+    assert (
+        ClassWithStaticPropertyAndMetaclass.static_property == "static_property_extra"
+    )
+
+    # Can't set on instance
+    instance = ClassWithStaticPropertyAndMetaclass()
+    assert instance.static_property == "static_property_extra"
+    with pytest.raises(AttributeError, match="can't set attribute 'static_property'"):
+        instance.static_property = "different2"
+    assert instance.static_property == "static_property_extra"
+    assert (
+        ClassWithStaticPropertyAndMetaclass.static_property == "static_property_extra"
+    )
 
     # other properties work as expected
-    Foo.normal  # 5
-    Foo.normal = 6
-    Foo.normal  # 6
-    f.normal  # dunno
-    Foo().normal  # 6
+    assert ClassWithStaticPropertyAndMetaclass.class_variable == "extra"
+    ClassWithStaticPropertyAndMetaclass.class_variable = "extranew"
+    assert ClassWithStaticPropertyAndMetaclass.class_variable == "extranew"
+    assert (
+        instance.class_variable == "extranew"
+    )  # pre-existing instance sees the change
+    assert (
+        ClassWithStaticPropertyAndMetaclass().class_variable == "extranew"
+    )  # new instance sees the change too
+
+    # All the usual tests:
+
+    # reacts to class changes
+    assert (
+        ClassWithStaticPropertyAndMetaclass.static_property
+        == "static_property_extranew"
+    )
+    assert (
+        instance.static_property == "static_property_extranew"
+    )  # pre-existing instance
+    assert (
+        ClassWithStaticPropertyAndMetaclass().static_property
+        == "static_property_extranew"
+    )  # new instance
+
+    # no reaction to instance changes, still points to class-level value:
+    instance.class_variable = "totally new"
+    assert ClassWithStaticPropertyAndMetaclass.class_variable == "extranew"
+    assert instance.static_property == "static_property_extranew"
+    assert (
+        ClassWithStaticPropertyAndMetaclass.static_property
+        == "static_property_extranew"
+    )
+    assert (
+        ClassWithStaticPropertyAndMetaclass().static_property
+        == "static_property_extranew"
+    )  # new instance
 
 
 ####
@@ -93,15 +141,55 @@ class BaseClass(metaclass=MetaClassContainingClassProperties):
 
 
 class ChildClass(BaseClass):
+    class_variable = "extra2"
+
     @classproperty
     def static_property_overloaded(cls):
         return f"static_property_overloaded2_{cls.class_variable}"
 
 
 def test_inheritance():
-    # TODO
-    # Test inheritance. does it work if not overloaded. and can you still overload
-    pass
+    # Test inheritance:
+    # does it work if not overloaded: yes, and cls points to child class as expected
+    assert (
+        BaseClass.static_property_not_overloaded
+        == BaseClass().static_property_not_overloaded
+        == "static_property_not_overloaded_extra"
+    )
+    assert (
+        ChildClass.static_property_not_overloaded
+        == ChildClass().static_property_not_overloaded
+        == "static_property_not_overloaded_extra2"
+    )
+
+    # and can you still overload: yes
+    assert (
+        BaseClass.static_property_overloaded
+        == BaseClass().static_property_overloaded
+        == "static_property_overloaded_extra"
+    )
+    assert (
+        ChildClass.static_property_overloaded
+        == ChildClass().static_property_overloaded
+        == "static_property_overloaded2_extra2"
+    )
+
+    # Can't set on class
+    # TODO: This one is broken:
+    # with pytest.raises(ValueError, match="Cannot set static_property_not_overloaded"):
+    #     ChildClass.static_property_not_overloaded = "different"
+    with pytest.raises(ValueError, match="Cannot set static_property_overloaded"):
+        BaseClass.static_property_overloaded = "different"
+    with pytest.raises(ValueError, match="Cannot set static_property_overloaded"):
+        ChildClass.static_property_overloaded = "different"
+
+    # Can't set on instance
+    with pytest.raises(AttributeError, match="can't set attribute"):
+        ChildClass().static_property_not_overloaded = "different"
+    with pytest.raises(AttributeError, match="can't set attribute"):
+        BaseClass().static_property_overloaded = "different"
+    with pytest.raises(AttributeError, match="can't set attribute"):
+        ChildClass().static_property_overloaded = "different"
 
 
 ####
@@ -134,8 +222,28 @@ class ConcreteClass(AbstractBaseClass):
         return f"static_property_overloaded_{cls.class_variable}"
 
 
-# TODO: Change all classvar to this pattern. And mention in our docs here that this is where it should be used
+# TODO: Change all classvar to this pattern, including with abstract property.
+# And mention in our docs here that this is where it should be used.
+
+
 def test_abstract():
-    # TODO
-    # but for abstract base class, can we keep it abstract property somehow. add that as a test too
-    pass
+    # Test for abstract base class: can we keep it abstract property? Yes
+    with pytest.raises(NotImplementedError):
+        AbstractBaseClass.static_property
+    with pytest.raises(NotImplementedError):
+        AbstractBaseClass().static_property
+
+    assert ConcreteClass.static_property == "static_property_overloaded_extra2"
+    assert ConcreteClass().static_property == "static_property_overloaded_extra2"
+
+    # Can't set on class
+    with pytest.raises(ValueError, match="Cannot set static_property"):
+        AbstractBaseClass.static_property = "different"
+    with pytest.raises(ValueError, match="Cannot set static_property"):
+        ConcreteClass.static_property = "different"
+
+    # Can't set on instance
+    with pytest.raises(AttributeError, match="can't set attribute"):
+        AbstractBaseClass().static_property = "different"
+    with pytest.raises(AttributeError, match="can't set attribute"):
+        ConcreteClass().static_property = "different"
