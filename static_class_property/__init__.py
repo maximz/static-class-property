@@ -55,10 +55,9 @@ class classproperty(GetOnlyProperty):
     """
 
     def __get__(self, instance: None, instance_type: Any) -> Any:
-        #         return self.fget.__get__(None, objtype)()
-        #         return self.fget(objtype) # this works unless also wrapped in @classmethod
-
         # todo: can we simplify the fget in the property? test to make sure it works w/ and w/o classmethod decorator too?
+        # return self.fget.__get__(None, objtype)()
+        # return self.fget(instance_type) # this works unless also wrapped in @classmethod
 
         # Wrap the fget in a classmethod, then call it with the class as the cls
         wrapped_property_getter = classmethod(self.fget)
