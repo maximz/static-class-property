@@ -70,11 +70,21 @@ class MetaClassContainingClassProperties(type):
     def __new__(meta, name, bases, attrs):
         # TODO: Run monkeytype and get types for this.
         # Find which attrs are classproperties
-        attrs_that_should_not_be_edited_after_definition = [
+        attrs_that_should_not_be_edited_after_definition = {
             attrname
             for attrname, attrval in attrs.items()
             if isinstance(attrval, classproperty)
-        ]
+        }
+        # handle inherited classproperties from base classes that are not overloaded in child class
+        for parent_class in bases:
+            # set union
+            attrs_that_should_not_be_edited_after_definition |= {
+                baseclass_attrname
+                for baseclass_attrname, baseclass_attrval in parent_class.__dict__.items()
+                if isinstance(baseclass_attrval, classproperty)
+                # don't add if we already examined above (i.e. skip if overloaded or unique to child class)
+                and baseclass_attrname not in attrs.keys()
+            }
 
         new_instance = super().__new__(meta, name, bases, attrs)
 

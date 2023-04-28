@@ -175,9 +175,8 @@ def test_inheritance():
     )
 
     # Can't set on class
-    # TODO: This one is broken:
-    # with pytest.raises(ValueError, match="Cannot set static_property_not_overloaded"):
-    #     ChildClass.static_property_not_overloaded = "different"
+    with pytest.raises(ValueError, match="Cannot set static_property_not_overloaded"):
+        ChildClass.static_property_not_overloaded = "different"
     with pytest.raises(ValueError, match="Cannot set static_property_overloaded"):
         BaseClass.static_property_overloaded = "different"
     with pytest.raises(ValueError, match="Cannot set static_property_overloaded"):
