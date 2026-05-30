@@ -1,5 +1,10 @@
 # static_class_property
 
+[![](https://img.shields.io/pypi/v/static_class_property.svg)](https://pypi.python.org/pypi/static_class_property)
+[![CI](https://github.com/maximz/static-class-property/actions/workflows/ci.yaml/badge.svg?branch=master)](https://github.com/maximz/static-class-property/actions/workflows/ci.yaml)
+[![](https://img.shields.io/badge/docs-here-blue.svg)](https://static-class-property.maximz.com)
+[![](https://img.shields.io/github/stars/maximz/static-class-property?style=social)](https://github.com/maximz/static-class-property)
+
 `static_class_property` provides a tiny `@classproperty` decorator for
 Python classes. It lets a method be read like a property on the class while the
 getter still receives the class object, making it useful for values computed
