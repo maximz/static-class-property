@@ -1,19 +1,20 @@
-# Static Class Property (WIP)
+# static_class_property
 
 [![](https://img.shields.io/pypi/v/static_class_property.svg)](https://pypi.python.org/pypi/static_class_property)
 [![CI](https://github.com/maximz/static-class-property/actions/workflows/ci.yaml/badge.svg?branch=master)](https://github.com/maximz/static-class-property/actions/workflows/ci.yaml)
 [![](https://img.shields.io/badge/docs-here-blue.svg)](https://static-class-property.maximz.com)
 [![](https://img.shields.io/github/stars/maximz/static-class-property?style=social)](https://github.com/maximz/static-class-property)
 
-## TODOs: Configuring this template
+`static_class_property` provides a tiny `@classproperty` decorator for
+Python classes. It lets a method be read like a property on the class while the
+getter still receives the class object, making it useful for values computed
+from other class attributes.
 
-Create a Netlify site for your repository, then turn off automatic builds in Netlify settings.
+## Why it exists
 
-Add these CI secrets: `PYPI_API_TOKEN`, `NETLIFY_AUTH_TOKEN` (Netlify user settings - personal access tokens), `DEV_NETLIFY_SITE_ID`, `PROD_NETLIFY_SITE_ID` (API ID from Netlify site settings)
-
-Set up Codecov at TODO
-
-## Overview
+Python's built-in `@property` is for instance attributes. Stacking `@property`
+with `@staticmethod` or `@classmethod` does not create a class-level property,
+so this package supplies the descriptor needed for that pattern.
 
 ## Installation
 
@@ -21,36 +22,56 @@ Set up Codecov at TODO
 pip install static_class_property
 ```
 
+The package declares support for Python 3.8 and newer and has no runtime
+dependencies.
+
 ## Usage
+
+```python
+from static_class_property import classproperty
+
+
+class Settings:
+    env = "prod"
+
+    @classproperty
+    def label(cls):
+        return f"settings:{cls.env}"
+
+
+assert Settings.label == "settings:prod"
+
+Settings.env = "dev"
+assert Settings.label == "settings:dev"
+```
+
+Use the getter argument like `cls` in a `@classmethod`: it is bound to the owner
+class each time the attribute is read.
+
+## How it works
+
+`classproperty` subclasses `property` and implements `__get__`. On access, it
+wraps the original getter with `classmethod`, binds it to the owner class, and
+calls it immediately.
+
+## Behavior and limitations
+
+- The value is recomputed on every access; there is no caching.
+- The decorator is intended for read-only computed class values.
+- Assigning to the attribute on the class replaces the descriptor, as with any
+  normal class attribute.
 
 ## Development
 
-Submit PRs against `develop` branch, then make a release pull request to `master`.
-
 ```bash
-# Optional: set up a pyenv virtualenv
-pyenv virtualenv 3.9 static_class_property-3.9
-echo "static_class_property-3.9" > .python-version
-pyenv version
-
-# Install requirements
-pip install --upgrade pip wheel
 pip install -r requirements_dev.txt
-
-# Install local package
 pip install -e .
-
-# Install pre-commit
-pre-commit install
-
-# Run tests
 make test
-
-# Run lint
 make lint
-
-# bump version before submitting a PR against master (all master commits are deployed)
-bump2version patch # possible: major / minor / patch
-
-# also ensure CHANGELOG.md updated
 ```
+
+Docs can be built with `make docs`.
+
+## License
+
+MIT License.
